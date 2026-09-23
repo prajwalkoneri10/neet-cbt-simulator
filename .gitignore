@@ -1,0 +1,24 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+
+server/node_modules/
+server/.env
+server/neet.sqlite
+server/neet.sqlite-shm
+server/neet.sqlite-wal
+
+*.log
+# Private/local files
+password mongo.txt
+
+# Local databases and backups
+*.sqlite
+*.sqlite-*
+*.db
+*.bak
+
+# Old unused backend
+backend/

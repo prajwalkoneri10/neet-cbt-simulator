@@ -1,0 +1,11 @@
+id,subject,chapter,question,optionA,optionB,optionC,optionD
+1,Biology,Cell Biology,"The basic structural and functional unit of life is","Tissue","Cell","Organ","Organ system"
+2,Biology,Cell Biology,"Which organelle is known as the powerhouse of the cell?","Nucleus","Ribosome","Mitochondria","Golgi body"
+3,Biology,Cell Biology,"Which pigment is responsible for photosynthesis?","Hemoglobin","Chlorophyll","Melanin","Keratin"
+4,Biology,Molecular Biology,"DNA stands for","Deoxyribonucleic Acid","Dinucleic Acid","Deoxyribose Acid","Double Nucleic Acid"
+5,Physics,Units and Measurements,"What is the SI unit of force?","Joule","Watt","Newton","Pascal"
+6,Physics,Units and Measurements,"What is the SI unit of energy?","Newton","Joule","Pascal","Watt"
+7,Physics,Motion,"What is the acceleration due to gravity on Earth approximately?","9.8 m/s²","5.6 m/s²","12.8 m/s²","15 m/s²"
+8,Chemistry,Atomic Structure,"What is the atomic number of carbon?","4","6","8","12"
+9,Chemistry,Chemical Bonding,"What is the chemical formula of water?","CO2","O2","H2O","NaCl"
+10,Chemistry,Environmental Chemistry,"Which gas is most abundant in Earth's atmosphere?","Oxygen","Nitrogen","Carbon dioxide","Hydrogen"
