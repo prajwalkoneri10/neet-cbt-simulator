@@ -542,33 +542,34 @@ app.post(
         );
 
       const result =
-        await pool.query(
-          `
-            INSERT INTO users (
-              name,
-              email,
-              password_hash
-            )
+  await pool.query(
+    `
+      INSERT INTO users (
+        name,
+        email,
+        password_hash,
+        created_at
+      )
 
-            VALUES (
-              $1,
-              $2,
-              $3
-            )
+      VALUES (
+        $1,
+        $2,
+        $3,
+        NOW()
+      )
 
-            RETURNING
-              id,
-              name,
-              email,
-              created_at
-          `,
-          [
-            name,
-            email,
-            passwordHash,
-          ]
-        );
-
+      RETURNING
+        id,
+        name,
+        email,
+        created_at
+    `,
+    [
+      name,
+      email,
+      passwordHash,
+    ]
+  );
       const user =
         result.rows[0];
 
