@@ -240,7 +240,7 @@ function App() {
     if (!emailRegex.test(email)) return setAuthMessage("❌ Please enter a valid email address.");
     if (authPassword.length < 6) return setAuthMessage("❌ Password must contain at least 6 characters.");
     if (authPassword !== authConfirmPassword) return setAuthMessage("❌ Passwords do not match.");
-    try { const d = await apiRequest("/auth/signup", { method: "POST", body: JSON.stringify({ name, email, password: authPassword }) }); if (!d.token) throw new Error("Server did not return an authentication token."); localStorage.setItem("neetAuthToken", d.token); setCurrentUser(d.user); const merged = getMergedProfile(d.profile, d.user || { name }); setStudentProfile(merged); localStorage.setItem("neetStudentProfile", JSON.stringify(merged)); await syncCloudData(d.user || { name, email }); resetAuth(); setPage("home"); } catch (e) { setAuthMessage(`❌ ${e.message}`); }
+    try { const d = await apiRequest("/api/auth/signup", { method: "POST", body: JSON.stringify({ name, email, password: authPassword }) }); if (!d.token) throw new Error("Server did not return an authentication token."); localStorage.setItem("neetAuthToken", d.token); setCurrentUser(d.user); const merged = getMergedProfile(d.profile, d.user || { name }); setStudentProfile(merged); localStorage.setItem("neetStudentProfile", JSON.stringify(merged)); await syncCloudData(d.user || { name, email }); resetAuth(); setPage("home"); } catch (e) { setAuthMessage(`❌ ${e.message}`); }
   };
   const handleLogin = async () => {
     const email = authEmail.trim().toLowerCase();
