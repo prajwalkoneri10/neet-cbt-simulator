@@ -26,6 +26,8 @@ dotenv.config();
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 const PORT = Number(process.env.PORT || 5000);
 
 const JWT_SECRET = process.env.JWT_SECRET;
