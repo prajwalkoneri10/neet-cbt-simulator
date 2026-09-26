@@ -35,12 +35,34 @@ function App() {
   const [cloudSyncing, setCloudSyncing] = useState(false);
 
   const apiRequest = async (path, options = {}) => {
-    const token = localStorage.getItem("neetAuthToken");
-    const response = await fetch(`${API_BASE_URL}${path}`, { ...options, headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(options.headers || {}) } });
+  const token = localStorage.getItem("neetAuthToken");
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options.headers || {}),
+      },
+    });
+
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.message || "Something went wrong.");
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+        data.error ||
+        `Request failed with status ${response.status}`
+      );
+    }
+
     return data;
-  };
+  } catch (error) {
+    console.error("API request failed:", error);
+    throw error;
+  }
+};
 
   const getMergedProfile = (profile, user = currentUser) => ({
     name: String(profile?.name || user?.name || "").trim(),
