@@ -1,0 +1,181 @@
+﻿id,subject,chapter,question,optiona,optionb,optionc,optiond
+1,Physics,Waves,A particle moves with constant speed in a circular path. Its acceleration is,Zero,Tangential only,Radially inward,Radially outward
+2,Physics,Thermal Physics,The SI unit of impulse is,N/s,N·s,J/s,kg/s
+3,Physics,Electricity,"If the velocity of an object is doubled, its kinetic energy becomes",Half,Double,Four times,Eight times
+4,Physics,Magnetism,A body of mass 2 kg is acted on by a force of 10 N. Its acceleration is,2 m/s²,5 m/s²,10 m/s²,20 m/s²
+5,Physics,Optics,Work done by a force perpendicular to displacement is,Maximum,Minimum but non-zero,Zero,Negative
+6,Physics,Modern Physics,The dimensional formula of pressure is,ML⁻¹T⁻²,ML T⁻²,MLT⁻¹,M⁻¹LT⁻²
+7,Physics,Semiconductors,A freely falling body near Earth's surface has acceleration approximately,0,4.9 m/s²,9.8 m/s²,19.6 m/s²
+8,Physics,Mechanics,Escape velocity from Earth's surface is approximately,7.9 km/s,9.8 km/s,11.2 km/s,15 km/s
+9,Physics,Waves,"For a simple pendulum, the time period is proportional to",√l,l²,1/√l,1/l
+10,Physics,Thermal Physics,The frequency of a wave is 50 Hz. Its time period is,0.02 s,0.2 s,2 s,50 s
+11,Physics,Electricity,Sound waves in air are generally,Transverse,Longitudinal,Electromagnetic,Polarized
+12,Physics,Magnetism,The unit of electric charge is,Volt,Ohm,Coulomb,Farad
+13,Physics,Optics,Ohm's law is represented by,V=IR,P=VI²,I=VR,R=VI
+14,Physics,Modern Physics,Two resistors 2 Ω and 3 Ω are connected in series. Equivalent resistance is,1 Ω,1.2 Ω,5 Ω,6 Ω
+15,Physics,Semiconductors,Electrical power can be written as,I/R,VI,V/I,IR²
+16,Physics,Mechanics,A charged particle moving parallel to a uniform magnetic field experiences magnetic force,Maximum,Zero,qvB,qB/v
+17,Physics,Waves,The magnetic field at the centre of a circular current loop increases when,Current decreases,Radius increases only,Current increases,Charge decreases
+18,Physics,Thermal Physics,Electromagnetic induction is associated with change in,Mass,Magnetic flux,Resistance only,Temperature only
+19,Physics,Electricity,A transformer works on the principle of,Electrolysis,Mutual induction,Photoelectric effect,Nuclear fission
+20,Physics,Magnetism,The speed of light in vacuum is approximately,3×10⁶ m/s,3×10⁷ m/s,3×10⁸ m/s,3×10⁹ m/s
+21,Physics,Optics,The refractive index of a medium is,v/c,c/v,cv,c+v
+22,Physics,Modern Physics,A convex lens has positive focal length because it is,Diverging,Converging,Plane,Reflecting
+23,Physics,Semiconductors,"In Young's double-slit experiment, fringe width increases when",Wavelength decreases,Slit separation increases,Screen distance increases,Both A and B
+24,Physics,Mechanics,Photoelectric emission supports the,Wave nature only,Particle nature of light,Sound nature of light,Mechanical nature
+25,Physics,Waves,The energy of a photon is,hν,h/ν,ν/h,hcν
+26,Physics,Thermal Physics,The de Broglie wavelength of a particle is,h/p,hp,p/h,h+p
+27,Physics,Electricity,An alpha particle is the nucleus of,Hydrogen,Helium,Lithium,Carbon
+28,Physics,Magnetism,Half-life is the time required for,All nuclei to decay,Half the radioactive nuclei to decay,One nucleus to decay,Activity to double
+29,Physics,Optics,In nuclear fission,Light nuclei combine,Heavy nucleus splits,Electrons split,Atoms evaporate
+30,Physics,Modern Physics,A semiconductor doped with pentavalent impurity becomes,Intrinsic,p-type,n-type,Insulator
+31,Physics,Semiconductors,The majority carriers in p-type semiconductor are,Electrons,Holes,Neutrons,Protons
+32,Physics,Mechanics,A diode is mainly used for,Rectification,Measuring mass,Producing sound,Cooling
+33,Physics,Waves,The logic gate whose output is 1 only when both inputs are 1 is,OR,NOT,AND,NOR
+34,Physics,Thermal Physics,The kinetic energy of an electron emitted in photoelectric effect depends on,Frequency of incident light,Intensity only,Area of metal only,Pressure
+35,Physics,Electricity,"For uniform circular motion, angular speed is",v/r,vr,r/v,v+r
+36,Physics,Magnetism,Momentum is conserved when external net force is,Maximum,Zero,Infinite,Variable only
+37,Physics,Optics,The coefficient of friction is,Always greater than 1,Dimensionless,Measured in N,Measured in J
+38,Physics,Modern Physics,A satellite in circular orbit is continuously,Moving away from Earth,Falling toward Earth,Stationary,Moving without acceleration
+39,Physics,Semiconductors,The potential energy stored in a spring is,kx,½kx²,2kx²,k/x
+40,Physics,Mechanics,Heat transfer through vacuum occurs by,Conduction,Convection,Radiation,Diffusion
+41,Physics,Waves,The first law of thermodynamics is based on conservation of,Charge,Momentum,Energy,Mass only
+42,Physics,Thermal Physics,"For an ideal gas at constant temperature, pressure is inversely proportional to",Temperature,Volume,Mass,Density
+43,Physics,Electricity,A Carnot engine has maximum efficiency when,Sink temperature is zero,Source and sink temperatures are equal,Source temperature is greater than sink temperature,Both are equal to room temperature
+44,Physics,Magnetism,The RMS speed of gas molecules increases with,Decrease in temperature,Increase in temperature,Increase in volume only,Decrease in pressure only
+45,Physics,Optics,The electric potential inside a conductor in electrostatic equilibrium is,Variable,Zero always,Constant,Infinite
+46,Chemistry,Electrochemistry,The atomic number of an element equals the number of,Neutrons,Protons,Nucleons,Isotopes
+47,Chemistry,Biomolecules,The maximum number of electrons in a shell with n=3 is,8,18,32,9
+48,Chemistry,Physical Chemistry,Which quantum number determines the shape of an orbital?,n,l,m,s
+49,Chemistry,Inorganic Chemistry,The pH of a neutral solution at 25°C is,0,5,7,14
+50,Chemistry,Organic Chemistry,Avogadro number is approximately,6.022×10²³,6.022×10²²,3×10⁸,9.8
+51,Chemistry,Equilibrium,One mole of an ideal gas at STP occupies approximately,2.24 L,22.4 L,224 L,11.2 L
+52,Chemistry,Electrochemistry,The oxidation number of oxygen in H2O is,+2,+1,-1,-2
+53,Chemistry,Biomolecules,A catalyst generally,Increases activation energy,Decreases activation energy,Changes equilibrium constant,Gets permanently consumed
+54,Chemistry,Physical Chemistry,Which is a strong acid?,CH3COOH,HCl,NH3,H2O
+55,Chemistry,Inorganic Chemistry,The hybridization of carbon in methane is,sp,sp²,sp³,dsp²
+56,Chemistry,Organic Chemistry,The shape of BF3 is,Linear,Trigonal planar,Tetrahedral,Bent
+57,Chemistry,Equilibrium,The bond in NaCl is mainly,Covalent,Ionic,Metallic,Hydrogen
+58,Chemistry,Electrochemistry,Which has the highest electronegativity?,F,Cl,O,N
+59,Chemistry,Biomolecules,The ideal gas equation is,PV=nRT,P=nVT,PT=nRV,V=nPRT
+60,Chemistry,Physical Chemistry,"At constant pressure, volume of an ideal gas is proportional to",1/T,T,T²,Pressure
+61,Chemistry,Inorganic Chemistry,The unit of rate constant for a first-order reaction is,mol L⁻¹ s⁻¹,s⁻¹,L mol⁻¹ s⁻¹,mol² L⁻² s⁻¹
+62,Chemistry,Organic Chemistry,A reaction at equilibrium has,Only products,Only reactants,Equal rates of forward and reverse reactions,No reaction occurring
+63,Chemistry,Equilibrium,Increasing pressure shifts a gaseous equilibrium toward the side with,More gas moles,Fewer gas moles,More solids,More liquids
+64,Chemistry,Electrochemistry,The strongest intermolecular hydrogen bonding is found prominently in,CH4,H2O,CO2,CCl4
+65,Chemistry,Biomolecules,Benzene has molecular formula,C6H6,C6H12,C5H6,C6H14
+66,Chemistry,Physical Chemistry,The functional group of alcohol is,-COOH,-OH,-CHO,-NH2
+67,Chemistry,Inorganic Chemistry,Ethene contains,C-C single bond only,C=C double bond,C≡C triple bond,Ionic bond
+68,Chemistry,Organic Chemistry,The IUPAC name of CH3CH2OH is,Methanol,Ethanol,Ethanal,Ethanoic acid
+69,Chemistry,Equilibrium,Acetic acid is also called,Methanoic acid,Ethanoic acid,Propanoic acid,Oxalic acid
+70,Chemistry,Electrochemistry,The polymer formed from ethene is,PVC,Polyethylene,Nylon-6,Bakelite
+71,Chemistry,Biomolecules,Proteins are polymers of,Fatty acids,Amino acids,Glucose only,Nucleotides
+72,Chemistry,Physical Chemistry,Glucose is a,Monosaccharide,Disaccharide,Polysaccharide,Protein
+73,Chemistry,Inorganic Chemistry,DNA contains the sugar,Ribose,Deoxyribose,Fructose,Sucrose
+74,Chemistry,Organic Chemistry,Vitamin C is chemically,Retinol,Ascorbic acid,Calciferol,Tocopherol
+75,Chemistry,Equilibrium,The chief ore of aluminium is,Haematite,Bauxite,Galena,Cinnabar
+76,Chemistry,Electrochemistry,Rust is mainly hydrated,Copper oxide,Iron(III) oxide,Aluminium chloride,Zinc oxide
+77,Chemistry,Biomolecules,The most abundant metal in Earth's crust is,Iron,Aluminium,Copper,Sodium
+78,Chemistry,Physical Chemistry,Which element is liquid at room temperature?,Bromine,Iodine,Sulfur,Carbon
+79,Chemistry,Inorganic Chemistry,Noble gases are generally unreactive because they have,Empty shells,Complete valence shells,No electrons,High density only
+80,Chemistry,Organic Chemistry,The common oxidation state of alkali metals is,+1,+2,-1,+3
+81,Chemistry,Equilibrium,The oxidation state of sulfur in H2SO4 is,+2,+4,+6,-2
+82,Chemistry,Electrochemistry,Electrolysis of molten NaCl produces sodium at the,Anode,Cathode,Salt bridge,Both electrodes
+83,Chemistry,Biomolecules,The electrode at which oxidation occurs is,Cathode,Anode,Salt bridge,Electrolyte
+84,Chemistry,Physical Chemistry,A buffer solution resists changes in,Temperature,pH,Volume,Pressure
+85,Chemistry,Inorganic Chemistry,Colligative properties depend mainly on,Nature of solute only,Number of solute particles,Colour,Shape of container
+86,Chemistry,Organic Chemistry,The molarity of a solution is moles of solute per,kg solvent,litre solution,gram solution,mole solvent
+87,Chemistry,Equilibrium,Which gas turns limewater milky?,O2,CO2,N2,H2
+88,Chemistry,Electrochemistry,The empirical formula gives,Actual molecular mass,Simplest whole-number ratio of atoms,Boiling point,Electron configuration
+89,Chemistry,Biomolecules,A substance that donates a proton is a,Lewis base only,Brønsted acid,Salt,Catalyst
+90,Biology,Reproduction,The basic structural and functional unit of life is,Tissue,Cell,Organ,Organ system
+91,Biology,Cell Biology,The powerhouse of the cell is,Ribosome,Mitochondrion,Golgi body,Lysosome
+92,Biology,Plant Physiology,Ribosomes are primarily involved in,Photosynthesis,Protein synthesis,Lipid storage,DNA replication only
+93,Biology,Human Physiology,The cell membrane is mainly composed of,Cellulose only,Lipids and proteins,Starch,DNA
+94,Biology,Genetics,DNA replication is generally,Conservative,Semiconservative,Dispersive only,Random
+95,Biology,Ecology,RNA contains,Thymine,Uracil,Both thymine and uracil always,No nitrogen base
+96,Biology,Biotechnology,The genetic material in most organisms is,Protein,DNA,Lipid,Carbohydrate
+97,Biology,Reproduction,A codon consists of,2 nucleotides,3 nucleotides,4 nucleotides,5 nucleotides
+98,Biology,Cell Biology,Photosynthesis occurs mainly in,Mitochondria,Chloroplasts,Ribosomes,Nucleus
+99,Biology,Plant Physiology,The oxygen released during photosynthesis comes primarily from,CO2,H2O,Glucose,Chlorophyll
+100,Biology,Human Physiology,The green pigment involved in photosynthesis is,Haemoglobin,Chlorophyll,Melanin,Keratin
+101,Biology,Genetics,Glycolysis occurs in the,Nucleus,Cytoplasm,Chloroplast only,Golgi apparatus
+102,Biology,Ecology,The end product of glycolysis is,Pyruvate,DNA,Urea,Oxygen
+103,Biology,Biotechnology,ATP is commonly called the,Genetic material,Energy currency of cell,Digestive enzyme,Structural lipid
+104,Biology,Reproduction,The functional unit of kidney is,Neuron,Nephron,Alveolus,Villus
+105,Biology,Cell Biology,Gas exchange in human lungs occurs mainly in,Trachea,Alveoli,Bronchi,Larynx
+106,Biology,Plant Physiology,Haemoglobin is present in,RBCs,Platelets,Plasma only,Neurons
+107,Biology,Human Physiology,The universal donor blood group for RBC transfusion is generally,AB+,O−,A+,B−
+108,Biology,Genetics,The hormone that lowers blood glucose is,Glucagon,Insulin,Adrenaline,Thyroxine
+109,Biology,Ecology,Insulin is secreted by,Thyroid,Pancreatic beta cells,Adrenal cortex,Pituitary
+110,Biology,Biotechnology,The master endocrine gland is commonly called,Thyroid,Pituitary,Pancreas,Adrenal
+111,Biology,Reproduction,The thyroid hormone requires,Iron,Iodine,Calcium,Sodium
+112,Biology,Cell Biology,The basic unit of nervous system is,Nephron,Neuron,Sarcomere,Osteon
+113,Biology,Plant Physiology,Reflex actions are mainly coordinated by,Spinal cord,Kidney,Liver,Pancreas
+114,Biology,Human Physiology,The human heart has,2 chambers,3 chambers,4 chambers,5 chambers
+115,Biology,Genetics,The valve between left atrium and left ventricle is,Tricuspid,Bicuspid/mitral,Pulmonary,Aortic
+116,Biology,Ecology,Arteries generally carry blood,Toward heart,Away from heart,Only deoxygenated blood,Only oxygenated blood
+117,Biology,Biotechnology,The largest artery in the human body is,Vena cava,Aorta,Pulmonary vein,Carotid vein
+118,Biology,Reproduction,Bile is produced by,Pancreas,Liver,Stomach,Kidney
+119,Biology,Cell Biology,Most absorption of digested nutrients occurs in,Stomach,Small intestine,Large intestine,Oesophagus
+120,Biology,Plant Physiology,Pepsin acts mainly on,Proteins,Fats,Minerals,Nucleic acids
+121,Biology,Human Physiology,The enzyme in saliva that begins starch digestion is,Pepsin,Salivary amylase,Trypsin,Lipase
+122,Biology,Genetics,The female reproductive organ that produces ova is,Uterus,Ovary,Cervix,Vagina
+123,Biology,Ecology,Fertilization in humans usually occurs in,Uterus,Fallopian tube,Ovary,Cervix
+124,Biology,Biotechnology,The hormone responsible for ovulation surge is,LH,Insulin,ADH,Thyroxine
+125,Biology,Reproduction,The placenta helps in exchange between,Two adults,Mother and foetus,Kidney and liver,Brain and heart
+126,Biology,Cell Biology,Mendel performed his classical experiments on,Drosophila,Pea plant,Maize,Bacteria
+127,Biology,Plant Physiology,The observable expression of a trait is called,Genotype,Phenotype,Allele,Genome
+128,Biology,Human Physiology,Alternative forms of a gene are called,Codons,Alleles,Introns,Ribosomes
+129,Biology,Genetics,The double helix model of DNA was proposed by,Darwin and Wallace,Watson and Crick,Mendel and Morgan,Pasteur and Koch
+130,Biology,Ecology,Natural selection is strongly associated with,Darwin,Mendel,Hooke,Linnaeus
+131,Biology,Biotechnology,The theory of evolution by natural selection explains,Inheritance only,Adaptation and differential survival,Cell division only,Photosynthesis
+132,Biology,Reproduction,A group of organisms capable of interbreeding to produce fertile offspring is a,Family,Species,Genus only,Kingdom
+133,Biology,Cell Biology,Lichens are an association between,Bacteria and virus,Alga and fungus,Plant and insect,Protozoan and animal
+134,Biology,Plant Physiology,Viruses are generally,Cellular organisms,Acellular infectious agents,Multicellular plants,Fungi
+135,Biology,Human Physiology,Bacteria reproduce commonly by,Binary fission,Meiosis,Budding only,Fragmentation only
+136,Biology,Genetics,Nitrogen fixation in legume root nodules is associated with,Rhizobium,Lactobacillus,Plasmodium,Yeast
+137,Biology,Ecology,The cell wall of plants is mainly made of,Chitin,Cellulose,Glycogen,Peptidoglycan
+138,Biology,Biotechnology,Xylem mainly transports,Food,Water and minerals,Hormones only,Oxygen
+139,Biology,Reproduction,Phloem mainly transports,Water only,Organic food,Nitrogen gas,Carbon dioxide
+140,Biology,Cell Biology,Transpiration is loss of water mainly through,Roots,"Aerial parts, especially stomata",Seeds only,Flowers only
+141,Biology,Plant Physiology,Stomata are controlled by,Guard cells,Root hairs,Xylem vessels,Sieve tubes
+142,Biology,Human Physiology,The male gametophyte in angiosperms is represented by,Ovule,Pollen grain,Ovary,Embryo sac
+143,Biology,Genetics,Double fertilization is characteristic of,Gymnosperms,Angiosperms,Bryophytes only,Algae only
+144,Biology,Ecology,The endosperm in most angiosperms is,Haploid,Diploid,Triploid,Tetraploid
+145,Biology,Biotechnology,Auxin is a plant hormone associated strongly with,Cell elongation,Blood clotting,Digestion,Immunity
+146,Biology,Reproduction,Abscisic acid is commonly associated with,Stomatal closure and dormancy,Cell division only,Fruit ripening only,Blood pressure
+147,Biology,Cell Biology,Ethylene is especially associated with,Fruit ripening,DNA replication,Photosynthetic electron transport,Bone formation
+148,Biology,Plant Physiology,The immune system's antibody-producing cells arise from,B lymphocytes,RBCs,Platelets,Neurons
+149,Biology,Human Physiology,Vaccination primarily develops,Immunological memory,Bone density,Digestion,Blood pressure
+150,Biology,Genetics,A pathogen causing malaria is,Plasmodium,Salmonella,HIV,Ascaris
+151,Biology,Ecology,Malaria is transmitted by,Male Anopheles,Female Anopheles mosquito,Housefly,Tick
+152,Biology,Biotechnology,AIDS is caused by,HBV,HIV,Plasmodium,E. coli
+153,Biology,Reproduction,Cancer involves,Uncontrolled cell division,Normal cell death only,Photosynthesis,Reduced respiration only
+154,Biology,Cell Biology,Insulin deficiency is associated with,Diabetes mellitus,Malaria,Scurvy,Rickets
+155,Biology,Plant Physiology,Vitamin D deficiency can lead to,Rickets,Scurvy,Night blindness,Beriberi
+156,Biology,Human Physiology,Vitamin C deficiency causes,Scurvy,Rickets,Goitre,Anaemia only
+157,Biology,Genetics,The ecological pyramid of energy is,Always inverted,Always upright,Always horizontal,Random
+158,Biology,Ecology,The primary producers in most ecosystems are,Carnivores,Green plants and other autotrophs,Decomposers,Parasites
+159,Biology,Biotechnology,Energy transfer between trophic levels is approximately,1%,10%,50%,90%
+160,Biology,Reproduction,Decomposers include mainly,Bacteria and fungi,Birds and mammals,Fish only,Reptiles only
+161,Biology,Cell Biology,A biodiversity hotspot is characterized by,High endemic biodiversity and significant threat,No species,Only deserts,No human impact ever
+162,Biology,Plant Physiology,The ozone layer is mainly present in the,Troposphere,Stratosphere,Mesosphere,Thermosphere
+163,Biology,Human Physiology,The greenhouse gas among these is,CO2,O2,N2,He
+164,Biology,Genetics,Biotechnology using recombinant DNA commonly involves,Genetic engineering,Weather forecasting,Geology,Astronomy
+165,Biology,Ecology,PCR is used to,Amplify DNA,Digest proteins,Produce ATP directly,Measure blood pressure
+166,Biology,Biotechnology,ELISA is commonly used to detect,Antigens or antibodies,Bones,Glucose only,Oxygen only
+167,Biology,Reproduction,A plasmid is commonly used as,Vector in genetic engineering,Human hormone,Digestive enzyme,Ribosomal protein
+168,Biology,Cell Biology,Restriction enzymes cut DNA at,Specific recognition sequences,Random protein sites,Cell membranes,Ribosomes
+169,Biology,Plant Physiology,The process of formation of RNA from DNA is,Translation,Transcription,Replication,Translocation
+170,Biology,Human Physiology,The process of protein synthesis from mRNA is,Translation,Transcription,Replication,Mutation
+171,Biology,Genetics,A mutation is,A change in genetic material,A type of tissue,A digestive enzyme,A hormone
+172,Biology,Ecology,The chromosome number in normal human somatic cells is,23,46,44,92
+173,Biology,Biotechnology,Normal human gametes contain,46 chromosomes,23 chromosomes,92 chromosomes,44 chromosomes
+174,Biology,Reproduction,The sex chromosomes in a typical human female are,XY,XX,YY,XO always
+175,Biology,Cell Biology,The sex chromosomes in a typical human male are,XX,XY,YY,XO
+176,Biology,Plant Physiology,Meiosis produces,Genetically identical diploid cells only,Haploid gametes,Only muscle cells,Bacteria
+177,Biology,Human Physiology,Mitosis is important for,Growth and tissue repair,Formation of gametes only,Crossing over only,Fertilization
+178,Biology,Genetics,Crossing over occurs during,Prophase I of meiosis,Prophase of mitosis only,Telophase II only,G1 only
+179,Biology,Ecology,The powerhouse organelle has its own,DNA,Cell wall,Chlorophyll always,Antibodies
+180,Biology,Biotechnology,Lysosomes contain,Hydrolytic enzymes,Haemoglobin,DNA only,Chlorophyll

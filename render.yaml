@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: neet-cbt-backend
+    env: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: CLIENT_URLS
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: ALLOW_VERCEL_PREVIEWS
+        value: "true"
