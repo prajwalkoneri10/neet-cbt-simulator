@@ -5,6 +5,7 @@ export const NAV_ITEMS = [
   { id: "startTest", label: "Start Mock Test", icon: "⏱️" },
   { id: "history", label: "Test History", icon: "📜" },
   { id: "analytics", label: "Performance Analytics", icon: "📈" },
+  { id: "compare", label: "Compare Tests", icon: "⚖️" },
   { id: "goals", label: "Goals & Study Progress", icon: "🎯" },
   { id: "questionBank", label: "Question Bank", icon: "📚" },
   { id: "profile", label: "Student Profile", icon: "👤" },

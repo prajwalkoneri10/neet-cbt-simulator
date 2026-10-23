@@ -417,7 +417,7 @@ app.get("/api/health", async (req, res) => {
    ROUTES: AUTHENTICATION
 ========================================================= */
 
-app.post("/api/auth/signup", authLimiter, async (req, res, next) => {
+app.post(["/api/auth/signup", "/api/auth/register"], authLimiter, async (req, res, next) => {
   try {
     const name = String(req.body.name || "").trim();
     const email = normalizeEmail(req.body.email);
@@ -688,27 +688,95 @@ app.get("/api/goals", authenticateToken, async (req, res, next) => {
   try {
     const profile = (await getProfile(req.user.userId)) || {};
 
-    const statsRes = await pool.query(
+    const attemptsRes = await pool.query(
       `
       SELECT
-        COUNT(*) AS "completedTests",
-        COALESCE(MAX(score), 0) AS "bestScore",
-        COALESCE(ROUND(AVG(score)), 0) AS "averageScore",
-        COALESCE(ROUND(AVG(accuracy)), 0) AS "averageAccuracy"
+        id,
+        test_title,
+        score,
+        max_score,
+        accuracy,
+        submitted_at,
+        time_taken_seconds,
+        subject_breakdown
       FROM test_attempts
       WHERE user_id = $1 AND status = 'completed'
+      ORDER BY submitted_at DESC
       `,
       [req.user.userId]
     );
 
-    const stats = statsRes.rows[0] || {};
+    const attempts = attemptsRes.rows;
+    const completedTests = attempts.length;
+
     const targetScore = profile.targetScore != null ? Number(profile.targetScore) : 650;
     const targetBiology = profile.targetBiology != null ? Number(profile.targetBiology) : 320;
     const targetPhysics = profile.targetPhysics != null ? Number(profile.targetPhysics) : 140;
     const targetChemistry = profile.targetChemistry != null ? Number(profile.targetChemistry) : 140;
-    const currentAvg = Number(stats.averageScore) || 0;
-    const bestScore = Number(stats.bestScore) || 0;
-    const gap = Math.max(0, targetScore - currentAvg);
+
+    let bestScore = 0;
+    let bestMaxScore = 720;
+    let bestScaledScore = 0;
+    let bestPercentage = 0;
+
+    let latestScore = 0;
+    let latestMaxScore = 720;
+    let latestScaledScore = 0;
+    let latestPercentage = 0;
+    let latestTitle = "";
+    let latestSubmittedAt = null;
+
+    let averageScore = 0;
+    let averageScaledScore = 0;
+    let averageAccuracy = 0;
+
+    if (completedTests > 0) {
+      // Latest attempt (first in DESC list)
+      const latest = attempts[0];
+      latestScore = Number(latest.score) || 0;
+      latestMaxScore = Number(latest.max_score) || 720;
+      latestPercentage = latestMaxScore > 0 ? Number(((latestScore / latestMaxScore) * 100).toFixed(1)) : 0;
+      latestScaledScore = latestMaxScore > 0 ? Math.round((latestScore / latestMaxScore) * 720) : 0;
+      latestTitle = latest.test_title || "Mock Test";
+      latestSubmittedAt = latest.submitted_at;
+
+      // Find best attempt by highest scaled score (consistent across different max marks)
+      let highestScaled = -9999;
+      let highestRaw = -9999;
+      let totalRaw = 0;
+      let totalScaled = 0;
+      let totalAcc = 0;
+
+      for (const att of attempts) {
+        const raw = Number(att.score) || 0;
+        const max = Number(att.max_score) || 720;
+        const scaled = max > 0 ? Math.round((raw / max) * 720) : 0;
+        const pct = max > 0 ? (raw / max) * 100 : 0;
+
+        totalRaw += raw;
+        totalScaled += scaled;
+        totalAcc += Number(att.accuracy) || 0;
+
+        if (scaled > highestScaled) {
+          highestScaled = scaled;
+          highestRaw = raw;
+          bestScore = raw;
+          bestMaxScore = max;
+          bestScaledScore = scaled;
+          bestPercentage = Number(pct.toFixed(1));
+        }
+      }
+
+      averageScore = Math.round(totalRaw / completedTests);
+      averageScaledScore = Math.round(totalScaled / completedTests);
+      averageAccuracy = Math.round(totalAcc / completedTests);
+    }
+
+    // Effective score against 720 target: use bestScaledScore (or 0 if no tests)
+    const effectiveScore = bestScaledScore;
+    const scoreGap = Math.max(0, targetScore - effectiveScore);
+    const targetReached = completedTests > 0 && effectiveScore >= targetScore;
+    const achievementPercentage = targetScore > 0 ? Math.min(100, Number(((effectiveScore / targetScore) * 100).toFixed(1))) : 0;
 
     // Calculate subject averages from attempt rows
     const subjectRes = await pool.query(
@@ -731,11 +799,24 @@ app.get("/api/goals", authenticateToken, async (req, res, next) => {
       targetBiology,
       targetPhysics,
       targetChemistry,
-      completedTests: Number(stats.completedTests) || 0,
+      completedTests,
       bestScore,
-      averageScore: currentAvg,
-      averageAccuracy: Number(stats.averageAccuracy) || 0,
-      scoreGap: gap,
+      bestMaxScore,
+      bestScaledScore,
+      bestPercentage,
+      latestScore,
+      latestMaxScore,
+      latestScaledScore,
+      latestPercentage,
+      latestTitle,
+      latestSubmittedAt,
+      averageScore,
+      averageScaledScore,
+      averageAccuracy,
+      effectiveScore,
+      scoreGap,
+      targetReached,
+      achievementPercentage,
       biologyAverage: Number(subAvgs.bioAvg) || 0,
       physicsAverage: Number(subAvgs.physAvg) || 0,
       chemistryAverage: Number(subAvgs.chemAvg) || 0,
@@ -749,26 +830,29 @@ app.put("/api/goals", authenticateToken, async (req, res, next) => {
   try {
     const { targetScore, targetBiology, targetPhysics, targetChemistry, targetYear } = req.body || {};
 
-    const tScore = Number(targetScore);
-    const tBio = Number(targetBiology);
-    const tPhys = Number(targetPhysics);
-    const tChem = Number(targetChemistry);
+    const currentProfile = (await getProfile(req.user.userId)) || {};
 
-    if (tScore < 0 || tScore > 720) {
+    const tScore = targetScore !== undefined ? Number(targetScore) : (currentProfile.targetScore || 650);
+    const tBio = targetBiology !== undefined ? Number(targetBiology) : (currentProfile.targetBiology || 320);
+    const tPhys = targetPhysics !== undefined ? Number(targetPhysics) : (currentProfile.targetPhysics || 140);
+    const tChem = targetChemistry !== undefined ? Number(targetChemistry) : (currentProfile.targetChemistry || 140);
+    const tYear = targetYear !== undefined ? Number(targetYear) : (currentProfile.targetYear || 2027);
+
+    if (isNaN(tScore) || tScore < 0 || tScore > 720) {
       return res.status(400).json({ error: "Total target score must be between 0 and 720." });
     }
-    if (tBio < 0 || tBio > 360) {
+    if (isNaN(tBio) || tBio < 0 || tBio > 360) {
       return res.status(400).json({ error: "Biology target score must be between 0 and 360." });
     }
-    if (tPhys < 0 || tPhys > 180) {
+    if (isNaN(tPhys) || tPhys < 0 || tPhys > 180) {
       return res.status(400).json({ error: "Physics target score must be between 0 and 180." });
     }
-    if (tChem < 0 || tChem > 180) {
+    if (isNaN(tChem) || tChem < 0 || tChem > 180) {
       return res.status(400).json({ error: "Chemistry target score must be between 0 and 180." });
     }
 
     const updated = await saveProfile(req.user.userId, {
-      targetYear: targetYear || 2027,
+      targetYear: tYear,
       targetScore: tScore,
       targetBiology: tBio,
       targetPhysics: tPhys,
@@ -798,6 +882,10 @@ app.get("/api/analytics", authenticateToken, async (req, res, next) => {
         score,
         max_score AS "maxScore",
         accuracy,
+        correct_count AS "correctCount",
+        incorrect_count AS "incorrectCount",
+        unanswered_count AS "unansweredCount",
+        total_questions AS "totalQuestions",
         submitted_at AS "submittedAt",
         time_taken_seconds AS "timeTakenSeconds",
         subject_breakdown AS "subjects",
@@ -810,6 +898,110 @@ app.get("/api/analytics", authenticateToken, async (req, res, next) => {
     );
 
     const attempts = attemptsRes.rows;
+    const totalAttempts = attempts.length;
+
+    // Top-level summary stats
+    let bestScore = 0;
+    let bestMaxScore = 720;
+    let bestScaledScore = 0;
+    let bestPercentage = 0;
+
+    let latestScore = 0;
+    let latestMaxScore = 720;
+    let latestScaledScore = 0;
+    let latestPercentage = 0;
+    let latestTitle = "";
+
+    let averageScore = 0;
+    let averageScaledScore = 0;
+    let averageAccuracy = 0;
+
+    let totalCorrectAll = 0;
+    let totalIncorrectAll = 0;
+    let totalUnansweredAll = 0;
+    let totalQuestionsAll = 0;
+
+    let trend = null;
+
+    if (totalAttempts > 0) {
+      let totalRaw = 0;
+      let totalScaled = 0;
+      let totalAcc = 0;
+      let highestScaled = -9999;
+
+      for (const att of attempts) {
+        const raw = Number(att.score) || 0;
+        const max = Number(att.maxScore) || 720;
+        const scaled = max > 0 ? Math.round((raw / max) * 720) : 0;
+        const pct = max > 0 ? Number(((raw / max) * 100).toFixed(1)) : 0;
+
+        totalRaw += raw;
+        totalScaled += scaled;
+        totalAcc += Number(att.accuracy) || 0;
+
+        totalCorrectAll += Number(att.correctCount) || 0;
+        totalIncorrectAll += Number(att.incorrectCount) || 0;
+        totalUnansweredAll += Number(att.unansweredCount) || 0;
+        totalQuestionsAll += Number(att.totalQuestions) || 0;
+
+        if (scaled > highestScaled) {
+          highestScaled = scaled;
+          bestScore = raw;
+          bestMaxScore = max;
+          bestScaledScore = scaled;
+          bestPercentage = pct;
+        }
+      }
+
+      averageScore = Math.round(totalRaw / totalAttempts);
+      averageScaledScore = Math.round(totalScaled / totalAttempts);
+      averageAccuracy = Math.round(totalAcc / totalAttempts);
+
+      // Latest attempt (last element in ASC list)
+      const latest = attempts[totalAttempts - 1];
+      latestScore = Number(latest.score) || 0;
+      latestMaxScore = Number(latest.maxScore) || 720;
+      latestPercentage = latestMaxScore > 0 ? Number(((latestScore / latestMaxScore) * 100).toFixed(1)) : 0;
+      latestScaledScore = latestMaxScore > 0 ? Math.round((latestScore / latestMaxScore) * 720) : 0;
+      latestTitle = latest.testTitle;
+
+      // Improvement / decline trend between attempts
+      if (totalAttempts >= 2) {
+        const previous = attempts[totalAttempts - 2];
+        const prevScore = Number(previous.score) || 0;
+        const prevMax = Number(previous.maxScore) || 720;
+        const prevPct = prevMax > 0 ? (prevScore / prevMax) * 100 : 0;
+        const latestPct = latestMaxScore > 0 ? (latestScore / latestMaxScore) * 100 : 0;
+
+        const scoreDelta = latestScore - prevScore;
+        const percentageDelta = Number((latestPct - prevPct).toFixed(1));
+        const direction = percentageDelta > 0 ? "improved" : percentageDelta < 0 ? "declined" : "steady";
+
+        trend = {
+          scoreDelta,
+          percentageDelta,
+          direction,
+          summaryText:
+            direction === "improved"
+              ? `+${scoreDelta} marks (+${percentageDelta}%) vs previous test`
+              : direction === "declined"
+              ? `${scoreDelta} marks (${percentageDelta}%) vs previous test`
+              : `Maintained equal score with previous test`,
+        };
+      }
+    }
+
+    const overallBreakdown = {
+      totalQuestions: totalQuestionsAll,
+      totalAttempted: totalCorrectAll + totalIncorrectAll,
+      totalCorrect: totalCorrectAll,
+      totalIncorrect: totalIncorrectAll,
+      totalUnanswered: totalUnansweredAll,
+      overallAccuracy:
+        totalCorrectAll + totalIncorrectAll > 0
+          ? Number(((totalCorrectAll / (totalCorrectAll + totalIncorrectAll)) * 100).toFixed(1))
+          : 0,
+    };
 
     // 2. Aggregate subject stats
     const subjects = {
@@ -860,6 +1052,7 @@ app.get("/api/analytics", authenticateToken, async (req, res, next) => {
     let weakest = null;
     let highestAcc = -1;
     let lowestAcc = 101;
+    let subjectsWithAttempts = 0;
 
     for (const [sName, sStat] of Object.entries(subjects)) {
       const acc = sStat.attempted > 0 ? Math.round((sStat.correct / sStat.attempted) * 100) : 0;
@@ -878,6 +1071,7 @@ app.get("/api/analytics", authenticateToken, async (req, res, next) => {
       };
 
       if (sStat.attempted > 0) {
+        subjectsWithAttempts += 1;
         if (acc > highestAcc) {
           highestAcc = acc;
           strongest = { name: sName, accuracy: acc, avgScore };
@@ -887,6 +1081,12 @@ app.get("/api/analytics", authenticateToken, async (req, res, next) => {
           weakest = { name: sName, accuracy: acc, avgScore };
         }
       }
+    }
+
+    // Only report strongest/weakest when sufficient data exists (at least 1 subject with attempts)
+    if (subjectsWithAttempts === 0) {
+      strongest = null;
+      weakest = null;
     }
 
     const chapterList = Object.values(chapterAgg).map((c) => {
@@ -939,19 +1139,41 @@ app.get("/api/analytics", authenticateToken, async (req, res, next) => {
     }
 
     res.json({
-      totalAttempts: attempts.length,
-      scoreTrajectory: attempts.map((a) => ({
-        attemptId: a.attemptId,
-        testTitle: a.testTitle,
-        score: Number(a.score),
-        maxScore: Number(a.maxScore),
-        accuracy: Number(a.accuracy),
-        submittedAt: a.submittedAt,
-        timeTakenMinutes: Math.round((Number(a.timeTakenSeconds) || 0) / 60),
-        biologyScore: Number(a.subjects?.Biology?.score || 0),
-        physicsScore: Number(a.subjects?.Physics?.score || 0),
-        chemistryScore: Number(a.subjects?.Chemistry?.score || 0),
-      })),
+      totalAttempts,
+      bestScore,
+      bestMaxScore,
+      bestPercentage,
+      bestScaledScore,
+      latestScore,
+      latestMaxScore,
+      latestPercentage,
+      latestScaledScore,
+      latestTitle,
+      averageScore,
+      averageScaledScore,
+      averageAccuracy,
+      trend,
+      overallBreakdown,
+      scoreTrajectory: attempts.map((a) => {
+        const score = Number(a.score);
+        const maxScore = Number(a.maxScore) || 720;
+        const percentage = maxScore > 0 ? Number(((score / maxScore) * 100).toFixed(1)) : 0;
+        const scaledScore720 = maxScore > 0 ? Math.round((score / maxScore) * 720) : 0;
+        return {
+          attemptId: a.attemptId,
+          testTitle: a.testTitle,
+          score,
+          maxScore,
+          percentage,
+          scaledScore720,
+          accuracy: Number(a.accuracy),
+          submittedAt: a.submittedAt,
+          timeTakenMinutes: Math.round((Number(a.timeTakenSeconds) || 0) / 60),
+          biologyScore: Number(a.subjects?.Biology?.score || 0),
+          physicsScore: Number(a.subjects?.Physics?.score || 0),
+          chemistryScore: Number(a.subjects?.Chemistry?.score || 0),
+        };
+      }),
       subjectPerformance: subjectAnalysis,
       strongestSubject: strongest,
       weakestSubject: weakest,
@@ -1209,6 +1431,145 @@ app.get("/api/tests/attempts/history", authenticateToken, async (req, res, next)
   try {
     const history = await getStudentAttemptHistory(pool, req.user.userId);
     res.json({ history });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Compare two completed test attempts for current authenticated student
+app.get("/api/tests/compare", authenticateToken, async (req, res, next) => {
+  try {
+    const attemptAId = Number(req.query.attemptA);
+    const attemptBId = Number(req.query.attemptB);
+
+    if (!attemptAId || isNaN(attemptAId) || !attemptBId || isNaN(attemptBId)) {
+      return res.status(400).json({ error: "Both attemptA and attemptB numeric IDs are required." });
+    }
+
+    if (attemptAId === attemptBId) {
+      return res.status(400).json({ error: "Please select two distinct test attempts to compare." });
+    }
+
+    // Enforce student ownership on attempts
+    const resAttempts = await pool.query(
+      `
+      SELECT
+        id AS "attemptId",
+        question_set_id AS "testId",
+        test_title AS "testTitle",
+        status,
+        started_at AS "startedAt",
+        submitted_at AS "submittedAt",
+        time_taken_seconds AS "timeTakenSeconds",
+        total_questions AS "totalQuestions",
+        score,
+        max_score AS "maxScore",
+        accuracy,
+        correct_count AS "correctCount",
+        incorrect_count AS "incorrectCount",
+        unanswered_count AS "unansweredCount",
+        subject_breakdown AS "subjects"
+      FROM test_attempts
+      WHERE id IN ($1, $2) AND user_id = $3 AND status = 'completed'
+      `,
+      [attemptAId, attemptBId, req.user.userId]
+    );
+
+    if (resAttempts.rows.length < 2) {
+      return res.status(404).json({
+        error: "One or both attempts were not found, not completed, or you do not have permission to access them.",
+      });
+    }
+
+    const attA = resAttempts.rows.find((r) => Number(r.attemptId) === attemptAId);
+    const attB = resAttempts.rows.find((r) => Number(r.attemptId) === attemptBId);
+
+    const parseAtt = (row) => {
+      const score = Number(row.score);
+      const maxScore = Number(row.maxScore) || 720;
+      const percentage = maxScore > 0 ? Number(((score / maxScore) * 100).toFixed(1)) : 0;
+      const scaledScore720 = maxScore > 0 ? Math.round((score / maxScore) * 720) : 0;
+      return {
+        attemptId: Number(row.attemptId),
+        testId: Number(row.testId),
+        testTitle: row.testTitle,
+        submittedAt: row.submittedAt,
+        timeTakenSeconds: Number(row.timeTakenSeconds) || 0,
+        totalQuestions: Number(row.totalQuestions) || 0,
+        score,
+        maxScore,
+        percentage,
+        scaledScore720,
+        accuracy: Number(row.accuracy) || 0,
+        correctCount: Number(row.correctCount) || 0,
+        incorrectCount: Number(row.incorrectCount) || 0,
+        unansweredCount: Number(row.unansweredCount) || 0,
+        subjects: row.subjects || {},
+      };
+    };
+
+    const parsedA = parseAtt(attA);
+    const parsedB = parseAtt(attB);
+
+    const sameMaxScore = parsedA.maxScore === parsedB.maxScore;
+    const scoreDiff = parsedB.score - parsedA.score;
+    const percentageDiff = Number((parsedB.percentage - parsedA.percentage).toFixed(1));
+    const scaledScoreDiff = parsedB.scaledScore720 - parsedA.scaledScore720;
+    const accuracyDiff = Number((parsedB.accuracy - parsedA.accuracy).toFixed(1));
+    const timeDiffSeconds = parsedB.timeTakenSeconds - parsedA.timeTakenSeconds;
+    const correctDiff = parsedB.correctCount - parsedA.correctCount;
+    const incorrectDiff = parsedB.incorrectCount - parsedA.incorrectCount;
+    const unansweredDiff = parsedB.unansweredCount - parsedA.unansweredCount;
+
+    // Subject-wise differences
+    const subjects = ["Biology", "Physics", "Chemistry"];
+    const subjectComparison = {};
+    for (const sub of subjects) {
+      const sA = parsedA.subjects[sub] || { score: 0, correct: 0, wrong: 0, unanswered: 0, total: 0 };
+      const sB = parsedB.subjects[sub] || { score: 0, correct: 0, wrong: 0, unanswered: 0, total: 0 };
+      const sAScore = Number(sA.score) || 0;
+      const sBScore = Number(sB.score) || 0;
+      const sAMax = (Number(sA.total) || 0) * 4;
+      const sBMax = (Number(sB.total) || 0) * 4;
+      const sAPct = sAMax > 0 ? Number(((sAScore / sAMax) * 100).toFixed(1)) : 0;
+      const sBPct = sBMax > 0 ? Number(((sBScore / sBMax) * 100).toFixed(1)) : 0;
+
+      subjectComparison[sub] = {
+        attemptA: {
+          score: sAScore,
+          correct: Number(sA.correct) || 0,
+          wrong: Number(sA.wrong) || 0,
+          unanswered: Number(sA.unanswered) || 0,
+          total: Number(sA.total) || 0,
+          percentage: sAPct,
+        },
+        attemptB: {
+          score: sBScore,
+          correct: Number(sB.correct) || 0,
+          wrong: Number(sB.wrong) || 0,
+          unanswered: Number(sB.unanswered) || 0,
+          total: Number(sB.total) || 0,
+          percentage: sBPct,
+        },
+        scoreDiff: sBScore - sAScore,
+        percentageDiff: Number((sBPct - sAPct).toFixed(1)),
+      };
+    }
+
+    res.json({
+      attemptA: parsedA,
+      attemptB: parsedB,
+      sameMaxScore,
+      scoreDiff,
+      percentageDiff,
+      scaledScoreDiff,
+      accuracyDiff,
+      timeDiffSeconds,
+      correctDiff,
+      incorrectDiff,
+      unansweredDiff,
+      subjectComparison,
+    });
   } catch (error) {
     next(error);
   }

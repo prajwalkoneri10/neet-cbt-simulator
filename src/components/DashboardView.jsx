@@ -76,10 +76,16 @@ export default function DashboardView({
             Welcome back, {currentUser?.name || "Doctor in the making"}! 🩺
           </h1>
           <p style={{ margin: 0, opacity: 0.9, fontSize: 14 }}>
-            Your target score is <strong>{targetScore}/720</strong>.{" "}
-            {goalsData?.scoreGap > 0
-              ? `You are ${goalsData.scoreGap} marks away from your target score!`
-              : "Keep practicing consistently to maintain exam speed and accuracy."}
+            Your target NEET score is <strong>{goalsData?.targetScore || targetScore}/720</strong>.{" "}
+            {goalsData?.targetReached ? (
+              <span style={{ color: "#86efac", fontWeight: 700 }}>
+                🎉 Congratulations! You have achieved your target score! Set a higher target or take more mocks to maintain your rank.
+              </span>
+            ) : goalsData?.scoreGap > 0 ? (
+              `You are ${goalsData.scoreGap} marks away from your target score!`
+            ) : (
+              "Keep practicing consistently to maintain exam speed and accuracy."
+            )}
           </p>
         </div>
 
@@ -98,8 +104,53 @@ export default function DashboardView({
           >
             🎯 Update Goals
           </button>
+          {attemptHistory.length >= 2 && (
+            <button
+              className="secondary-button"
+              style={{ border: "1px solid rgba(255,255,255,0.4)", color: "#fff", background: "transparent" }}
+              onClick={() => onNavigate("compare")}
+            >
+              ⚖️ Compare Tests
+            </button>
+          )}
         </div>
       </section>
+
+      {/* Target Achievement Banner if reached */}
+      {goalsData?.targetReached && (
+        <div
+          style={{
+            background: "linear-gradient(135deg, #059669, #10b981)",
+            color: "#ffffff",
+            padding: "16px 20px",
+            borderRadius: 12,
+            marginBottom: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 12,
+            boxShadow: "0 4px 14px rgba(16, 185, 129, 0.25)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 28 }}>🎯</span>
+            <div>
+              <strong style={{ fontSize: 16 }}>Target Score Reached!</strong>
+              <div style={{ fontSize: 13, opacity: 0.95 }}>
+                Your best mock performance meets your target goal of {goalsData.targetScore} marks. Keep challenging yourself!
+              </div>
+            </div>
+          </div>
+          <button
+            className="secondary-button"
+            style={{ background: "#ffffff", color: "#065f46", fontWeight: 700, fontSize: 12 }}
+            onClick={() => onNavigate("goals")}
+          >
+            Raise Target Goal →
+          </button>
+        </div>
+      )}
 
       {/* Top Metric Cards */}
       <div className="kpi-grid">
@@ -112,20 +163,28 @@ export default function DashboardView({
             </span>
           </div>
           <span className="kpi-subtext" style={{ color: "#64748b" }}>
-            {latestAttempt ? `${latestAttempt.accuracy}% accuracy` : "No tests completed"}
+            {latestAttempt
+              ? `${latestAttempt.accuracy}% accuracy (${Math.round((latestAttempt.score / latestAttempt.maxScore) * 100)}%)`
+              : "No tests completed"}
           </span>
         </div>
 
         <div className="kpi-card">
           <span className="kpi-label">Best Score</span>
           <div className="kpi-value" style={{ color: bestScore > 0 ? "#10b981" : "#94a3b8" }}>
-            {bestScore > 0 ? bestScore : "—"}
+            {goalsData?.bestScore != null ? goalsData.bestScore : (bestScore > 0 ? bestScore : "—")}
             <span style={{ fontSize: 14, fontWeight: 500, color: "#64748b" }}>
-              {bestScore > 0 ? " / 720" : ""}
+              {goalsData?.bestMaxScore ? ` / ${goalsData.bestMaxScore}` : (bestScore > 0 ? " / 720" : "")}
             </span>
           </div>
           <span className="kpi-subtext" style={{ color: "#10b981" }}>
-            {bestScore >= 650 ? "AIIMS Tier Score!" : bestScore > 0 ? "Keep pushing for 650+" : "Take a test to set best"}
+            {goalsData?.bestPercentage != null
+              ? `${goalsData.bestPercentage}% (${goalsData.bestScaledScore}/720 scaled)`
+              : bestScore >= 650
+              ? "AIIMS Tier Score!"
+              : bestScore > 0
+              ? "Keep pushing for 650+"
+              : "Take a test to set best"}
           </span>
         </div>
 
@@ -152,14 +211,15 @@ export default function DashboardView({
         <div className="kpi-card">
           <span className="kpi-label">Target Progress</span>
           <div className="kpi-value" style={{ color: "#2563eb" }}>
-            {targetProgress}%
+            {goalsData?.achievementPercentage != null ? `${goalsData.achievementPercentage}%` : `${targetProgress}%`}
           </div>
           <div className="progress-bar-track" style={{ marginTop: 6 }}>
             <div
               className="progress-bar-fill"
               style={{
-                width: `${targetProgress}%`,
-                background: targetProgress >= 80 ? "#10b981" : "#2563eb",
+                width: `${goalsData?.achievementPercentage != null ? goalsData.achievementPercentage : targetProgress}%`,
+                background:
+                  (goalsData?.achievementPercentage || targetProgress) >= 80 ? "#10b981" : "#2563eb",
               }}
             />
           </div>
@@ -349,19 +409,35 @@ export default function DashboardView({
         </div>
       </div>
 
-      {/* Recent Test Attempts */}
+      {/* Test History Section on Dashboard */}
       <section style={{ background: "#ffffff", padding: 22, borderRadius: 14, border: "1px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "#0f172a" }}>
-            ⏱️ Recent Test Attempts
-          </h3>
-          <button
-            className="secondary-button"
-            style={{ fontSize: 13, padding: "6px 12px" }}
-            onClick={() => onNavigate("history")}
-          >
-            View Complete History ({attemptHistory.length}) →
-          </button>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "#0f172a" }}>
+              📜 Test History
+            </h3>
+            <span style={{ fontSize: 13, color: "#64748b" }}>
+              Your completed mock test attempts (newest first)
+            </span>
+          </div>
+          <div style={{ display: "flex", gap: 10 }}>
+            {attemptHistory.length >= 2 && (
+              <button
+                className="secondary-button"
+                style={{ fontSize: 13, padding: "6px 12px" }}
+                onClick={() => onNavigate("compare")}
+              >
+                ⚖️ Compare Tests
+              </button>
+            )}
+            <button
+              className="secondary-button"
+              style={{ fontSize: 13, padding: "6px 12px" }}
+              onClick={() => onNavigate("history")}
+            >
+              View Complete Archive ({attemptHistory.length}) →
+            </button>
+          </div>
         </div>
 
         {attemptHistory.length > 0 ? (
@@ -369,47 +445,81 @@ export default function DashboardView({
             <table className="custom-table">
               <thead>
                 <tr>
-                  <th>Test Title</th>
-                  <th>Date & Time</th>
-                  <th>Score</th>
-                  <th>Accuracy</th>
+                  <th>Test ID & Name</th>
+                  <th>Completion Date & Time</th>
+                  <th>Score & %</th>
+                  <th>Questions Breakdown</th>
+                  <th>Subject Marks</th>
                   <th>Time Taken</th>
-                  <th>Action</th>
+                  <th>Max Marks</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {attemptHistory.slice(0, 5).map((att) => (
-                  <tr key={att.attemptId}>
-                    <td>
-                      <strong>{att.testTitle}</strong>
-                    </td>
-                    <td>{new Date(att.submittedAt).toLocaleDateString()} {new Date(att.submittedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</td>
-                    <td>
-                      <span style={{ fontWeight: 800, color: "#1e3a8a", fontSize: 15 }}>{att.score}</span>
-                      <span style={{ color: "#64748b", fontSize: 13 }}> / {att.maxScore}</span>
-                    </td>
-                    <td>
-                      <span
-                        style={{
-                          fontWeight: 700,
-                          color: att.accuracy >= 75 ? "#10b981" : att.accuracy >= 50 ? "#3b82f6" : "#ef4444",
-                        }}
-                      >
-                        {att.accuracy}%
-                      </span>
-                    </td>
-                    <td>{Math.round((att.timeTakenSeconds || 0) / 60)} mins</td>
-                    <td>
-                      <button
-                        className="secondary-button"
-                        style={{ fontSize: 12, padding: "5px 12px" }}
-                        onClick={() => onViewResult(att.attemptId)}
-                      >
-                        Scorecard & Review
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {attemptHistory.slice(0, 5).map((att) => {
+                  const pct = att.maxScore > 0 ? ((att.score / att.maxScore) * 100).toFixed(1) : 0;
+                  const bioScore = att.subjects?.Biology?.score != null ? `${att.subjects.Biology.score}` : "—";
+                  const phyScore = att.subjects?.Physics?.score != null ? `${att.subjects.Physics.score}` : "—";
+                  const chemScore = att.subjects?.Chemistry?.score != null ? `${att.subjects.Chemistry.score}` : "—";
+
+                  return (
+                    <tr key={att.attemptId}>
+                      <td>
+                        <div style={{ fontWeight: 700, color: "#0f172a" }}>{att.testTitle}</div>
+                        <span style={{ fontSize: 11, color: "#64748b" }}>Attempt #{att.attemptId}</span>
+                      </td>
+                      <td>
+                        <div>{new Date(att.submittedAt).toLocaleDateString()}</div>
+                        <span style={{ fontSize: 11, color: "#64748b" }}>
+                          {new Date(att.submittedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </td>
+                      <td>
+                        <span style={{ fontWeight: 800, color: "#1e3a8a", fontSize: 15 }}>{att.score}</span>
+                        <span style={{ color: "#64748b", fontSize: 13 }}> / {att.maxScore}</span>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: Number(pct) >= 75 ? "#10b981" : Number(pct) >= 50 ? "#2563eb" : "#ef4444" }}>
+                          {pct}%
+                        </div>
+                      </td>
+                      <td>
+                        <div style={{ fontSize: 12, whiteSpace: "nowrap" }}>
+                          <span style={{ color: "#15803d", fontWeight: 700 }} title="Correct (+4)">✓ {att.correctCount}</span>{" • "}
+                          <span style={{ color: "#b91c1c", fontWeight: 700 }} title="Incorrect (-1)">✗ {att.incorrectCount}</span>{" • "}
+                          <span style={{ color: "#64748b" }} title="Unanswered">⚪ {att.unansweredCount}</span>
+                        </div>
+                        <div style={{ fontSize: 11, color: "#64748b" }}>
+                          Acc: {att.accuracy}%
+                        </div>
+                      </td>
+                      <td>
+                        <div style={{ fontSize: 12, whiteSpace: "nowrap" }}>
+                          <span style={{ color: "#047857" }} title="Biology Marks">Bio: {bioScore}</span>{" • "}
+                          <span style={{ color: "#b45309" }} title="Physics Marks">Phy: {phyScore}</span>{" • "}
+                          <span style={{ color: "#86198f" }} title="Chemistry Marks">Chem: {chemScore}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>
+                          {Math.round((att.timeTakenSeconds || 0) / 60)} mins
+                        </span>
+                      </td>
+                      <td>
+                        <span style={{ fontSize: 13, color: "#475569", fontWeight: 600 }}>
+                          {att.maxScore} marks
+                        </span>
+                      </td>
+                      <td>
+                        <button
+                          className="secondary-button"
+                          style={{ fontSize: 12, padding: "5px 12px", whiteSpace: "nowrap" }}
+                          onClick={() => onViewResult(att.attemptId)}
+                        >
+                          Scorecard & Review
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

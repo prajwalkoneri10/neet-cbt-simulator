@@ -11,6 +11,7 @@ import GoalsView from "./components/GoalsView";
 import QuestionBankView from "./components/QuestionBankView";
 import ProfileView from "./components/ProfileView";
 import AdminUploadView from "./components/AdminUploadView";
+import CompareTestsView from "./components/CompareTestsView";
 import ExamView from "./components/ExamView";
 import ResultView from "./components/ResultView";
 import AuthView from "./components/AuthView";
@@ -38,6 +39,7 @@ export default function App() {
   const [activeExamSession, setActiveExamSession] = useState(null);
   const [activeTestId, setActiveTestId] = useState(null);
   const [testResult, setTestResult] = useState(null);
+  const [compareSelection, setCompareSelection] = useState({ idA: null, idB: null });
 
   // Listen for hash changes
   useEffect(() => {
@@ -163,6 +165,12 @@ export default function App() {
     } catch (err) {
       alert(`Failed to load test scorecard: ${err.message}`);
     }
+  };
+
+  // Launch Compare Tests View
+  const handleStartCompare = (idA = null, idB = null) => {
+    setCompareSelection({ idA, idB });
+    setPage("compare");
   };
 
   // Loading Screen
@@ -314,11 +322,22 @@ export default function App() {
               attemptHistory={attemptHistory}
               onViewResult={handleViewResult}
               onNavigate={(p) => setPage(p)}
+              onCompare={handleStartCompare}
             />
           )}
 
           {page === "analytics" && (
             <AnalyticsView onNavigate={(p) => setPage(p)} />
+          )}
+
+          {page === "compare" && (
+            <CompareTestsView
+              attemptHistory={attemptHistory}
+              initialCompareA={compareSelection.idA}
+              initialCompareB={compareSelection.idB}
+              onViewResult={handleViewResult}
+              onNavigate={(p) => setPage(p)}
+            />
           )}
 
           {page === "goals" && (

@@ -1274,13 +1274,32 @@ async function getStudentAttemptHistory(pool, userId) {
     [userId]
   );
 
-  return res.rows.map((row) => ({
-    ...row,
-    score: Number(row.score),
-    maxScore: Number(row.maxScore),
-    accuracy: Number(row.accuracy),
-    subjects: row.subjects || {},
-  }));
+  return res.rows.map((row) => {
+    const score = Number(row.score);
+    const maxScore = Number(row.maxScore) || 720;
+    const percentage = maxScore > 0 ? Number(((score / maxScore) * 100).toFixed(1)) : 0;
+    const scaledScore720 = maxScore > 0 ? Math.round((score / maxScore) * 720) : 0;
+    const timeTakenSeconds = Number(row.timeTakenSeconds) || 0;
+    const timeTakenMinutes = Math.round(timeTakenSeconds / 60);
+
+    return {
+      ...row,
+      attemptId: Number(row.attemptId),
+      testId: Number(row.testId),
+      score,
+      maxScore,
+      percentage,
+      scaledScore720,
+      accuracy: Number(row.accuracy),
+      correctCount: Number(row.correctCount) || 0,
+      incorrectCount: Number(row.incorrectCount) || 0,
+      unansweredCount: Number(row.unansweredCount) || 0,
+      totalQuestions: Number(row.totalQuestions) || 0,
+      timeTakenSeconds,
+      timeTakenMinutes,
+      subjects: row.subjects || {},
+    };
+  });
 }
 
 module.exports = {

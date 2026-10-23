@@ -189,6 +189,8 @@ export const api = {
       }),
     getResult: (attemptId) => apiRequest(`/tests/attempts/${attemptId}/result`),
     getHistory: () => apiRequest("/tests/attempts/history"),
+    compare: (attemptA, attemptB) =>
+      apiRequest(`/tests/compare?attemptA=${attemptA}&attemptB=${attemptB}`),
   },
 
   // Question Bank & CSV Import
